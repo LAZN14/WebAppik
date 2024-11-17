@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление домофоном</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            background-color: #0088cc;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #006699;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1f1f1f;
+                color: white;
+            }
+        }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        function showApartments() {
+            window.Telegram.WebApp.sendData(JSON.stringify({action: 'show_apartments'}));
+        }
+        
+        function showTenants() {
+            window.Telegram.WebApp.sendData(JSON.stringify({action: 'show_tenants'}));
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Управление домофоном</h1>
+        </div>
+        <button class="button" onclick="showApartments()">
+            🏠 Посмотреть квартиры
+        </button>
+        <button class="button" onclick="showTenants()">
+            👥 Посмотреть жильцов
+        </button>
+    </div>
+</body>
+</html> 
