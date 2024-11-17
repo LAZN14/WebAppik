@@ -5,64 +5,219 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление домофоном</title>
     <style>
+        :root {
+            --primary-color: #0088cc;
+            --secondary-color: #006699;
+            --background-light: #f5f5f5;
+            --background-dark: #1f1f1f;
+            --text-light: #333;
+            --text-dark: #fff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            min-height: 100vh;
+            transition: background-color 0.3s ease;
         }
+
         .container {
             max-width: 600px;
             margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease;
         }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin: 0;
+            animation: slideDown 0.5s ease;
+        }
+
         .button {
             display: block;
             width: 100%;
-            padding: 15px;
-            margin: 10px 0;
+            padding: 18px;
+            margin: 15px 0;
             border: none;
-            border-radius: 8px;
-            background-color: #0088cc;
+            border-radius: 12px;
+            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
             color: white;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.5s ease;
         }
+
         .button:hover {
-            background-color: #006699;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
+
+        .button:active {
+            transform: translateY(1px);
         }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .button:hover::before {
+            left: 100%;
+        }
+
+        .button span {
+            margin-right: 8px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
         @media (prefers-color-scheme: dark) {
             body {
-                background-color: #1f1f1f;
-                color: white;
+                background-color: var(--background-dark);
+                color: var(--text-dark);
             }
+
+            .container {
+                background: rgba(45, 45, 45, 0.9);
+            }
+
+            .header h1 {
+                color: #fff;
+            }
+
+            .button {
+                background: linear-gradient(145deg, #0099ff, #0077cc);
+            }
+        }
+
+        /* Добавляем пульсацию для кнопок */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 136, 204, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 136, 204, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 136, 204, 0);
+            }
+        }
+
+        .button:focus {
+            animation: pulse 1.5s infinite;
+            outline: none;
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация Telegram WebApp
+            window.Telegram.WebApp.ready();
+            
+            // Установка основного цвета темы
+            window.Telegram.WebApp.setHeaderColor('#0088cc');
+            
+            // Анимация появления контента
+            document.querySelector('.container').style.opacity = '1';
+        });
+
         function showApartments() {
+            animateButton(event.target);
             window.Telegram.WebApp.sendData(JSON.stringify({action: 'show_apartments'}));
         }
         
-        function showTenants() {
-            window.Telegram.WebApp.sendData(JSON.stringify({action: 'show_tenants'}));
+        function showDomofons() {
+            animateButton(event.target);
+            window.Telegram.WebApp.sendData(JSON.stringify({action: 'show_domofons'}));
+        }
+
+        function animateButton(button) {
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 100);
         }
     </script>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Управление домофоном</h1>
+            <h1>🏠 Умный домофон</h1>
         </div>
         <button class="button" onclick="showApartments()">
-            🏠 Посмотреть квартиры
+            <span>🏢</span> Посмотреть квартиры
         </button>
-        <button class="button" onclick="showTenants()">
-            👥 Посмотреть жильцов
+        <button class="button" onclick="showDomofons()">
+            <span>🚪</span> Посмотреть домофоны
         </button>
     </div>
 </body>
